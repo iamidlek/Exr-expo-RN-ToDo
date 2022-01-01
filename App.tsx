@@ -34,12 +34,20 @@ export default function App() {
   const onChangeText = (payload: string) => setText(payload);
 
   const saveToDos = async (toSave: object) => {
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    } catch (e) {
+      console.log(e);
+    }
   };
   const loadToDos = async () => {
-    const s = await AsyncStorage.getItem(STORAGE_KEY);
-    if (s) {
-      setToDos(JSON.parse(s));
+    try {
+      const s = await AsyncStorage.getItem(STORAGE_KEY);
+      if (s) {
+        setToDos(JSON.parse(s));
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -47,14 +55,18 @@ export default function App() {
     if (text === "") {
       return;
     }
-    // deep copy
-    const newToDos = {
-      ...toDos,
-      [Date.now()]: { text, working },
-    };
-    setToDos(newToDos);
-    await saveToDos(newToDos);
-    setText("");
+    try {
+      // deep copy
+      const newToDos = {
+        ...toDos,
+        [Date.now()]: { text, working },
+      };
+      setToDos(newToDos);
+      await saveToDos(newToDos);
+      setText("");
+    } catch (e) {
+      console.log(e);
+    }
   };
   return (
     <View style={styles.container}>
