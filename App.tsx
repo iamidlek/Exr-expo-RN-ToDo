@@ -33,12 +33,14 @@ export default function App() {
   const work = () => setWorking(true);
   const onChangeText = (payload: string) => setText(payload);
 
-  const saveToDos = async (toSave) => {
+  const saveToDos = async (toSave: object) => {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   };
   const loadToDos = async () => {
     const s = await AsyncStorage.getItem(STORAGE_KEY);
-    setToDos(JSON.parse(s));
+    if (s) {
+      setToDos(JSON.parse(s));
+    }
   };
 
   const addToDo = async () => {
