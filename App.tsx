@@ -9,6 +9,8 @@ import {
   Alert,
   ScrollView,
   Platform,
+  NativeSyntheticEvent,
+  TextInputSubmitEditingEventData,
 } from "react-native";
 import { Fontisto, AntDesign } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,6 +21,7 @@ interface ItoDo {
     text: string;
     done: boolean;
     working: boolean;
+    editToggle: boolean;
   };
 }
 
@@ -63,7 +66,7 @@ export default function App() {
       // deep copy
       const newToDos = {
         ...toDos,
-        [Date.now()]: { text, done: false, working },
+        [Date.now()]: { text, done: false, working, editToggle: false },
       };
       setToDos(newToDos);
       await saveToDos(newToDos);
@@ -108,6 +111,23 @@ export default function App() {
     saveToDos(newToDos);
   };
 
+  const editToDo = (key: string) => {
+    const newToDos = { ...toDos };
+    newToDos[key].editToggle = !newToDos[key].editToggle;
+    setToDos(newToDos);
+    saveToDos(newToDos);
+  };
+
+  const fixToDo = (
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
+    key: string
+  ) => {
+    const newToDos = { ...toDos };
+    newToDos[key].text = e.nativeEvent.text;
+    newToDos[key].editToggle = !newToDos[key].editToggle;
+    setToDos(newToDos);
+    saveToDos(newToDos);
+  };
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -149,10 +169,24 @@ export default function App() {
         {Object.keys(toDos).map((key) =>
           toDos[key].working === working ? (
             <View style={styles.toDo} key={key}>
-              <Text style={toDos[key].done ? styles.doneText : styles.toDoText}>
-                {toDos[key].text}
-              </Text>
+              {toDos[key].editToggle ? (
+                <TextInput
+                  onSubmitEditing={(e) => fixToDo(e, key)}
+                  returnKeyType="done"
+                  placeholder={toDos[key].text}
+                  style={styles.input}
+                />
+              ) : (
+                <Text
+                  style={toDos[key].done ? styles.doneText : styles.toDoText}
+                >
+                  {toDos[key].text}
+                </Text>
+              )}
               <View style={styles.box}>
+                <TouchableOpacity onPress={() => editToDo(key)}>
+                  <AntDesign name="edit" size={24} style={styles.check} />
+                </TouchableOpacity>
                 {toDos[key].done ? (
                   <TouchableOpacity onPress={() => doneToDo(key)}>
                     <AntDesign name="reload1" size={24} style={styles.check} />
