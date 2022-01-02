@@ -17,6 +17,7 @@ import { theme } from "./colors";
 interface ItoDo {
   [key: string]: {
     text: string;
+    done: boolean;
     working: boolean;
   };
 }
@@ -62,7 +63,7 @@ export default function App() {
       // deep copy
       const newToDos = {
         ...toDos,
-        [Date.now()]: { text, working },
+        [Date.now()]: { text, done: false, working },
       };
       setToDos(newToDos);
       await saveToDos(newToDos);
@@ -99,6 +100,14 @@ export default function App() {
       ]);
     }
   };
+
+  const doneToDo = (key: string) => {
+    const newToDos = { ...toDos };
+    newToDos[key].done = !newToDos[key].done;
+    setToDos(newToDos);
+    saveToDos(newToDos);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -140,11 +149,19 @@ export default function App() {
         {Object.keys(toDos).map((key) =>
           toDos[key].working === working ? (
             <View style={styles.toDo} key={key}>
-              <Text style={styles.toDoText}>{toDos[key].text}</Text>
+              <Text style={toDos[key].done ? styles.doneText : styles.toDoText}>
+                {toDos[key].text}
+              </Text>
               <View style={styles.box}>
-                <TouchableOpacity onPress={() => deleteToDo(key)}>
-                  <AntDesign name="check" size={24} style={styles.check} />
-                </TouchableOpacity>
+                {toDos[key].done ? (
+                  <TouchableOpacity onPress={() => doneToDo(key)}>
+                    <AntDesign name="reload1" size={24} style={styles.check} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={() => doneToDo(key)}>
+                    <AntDesign name="check" size={24} style={styles.check} />
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity onPress={() => deleteToDo(key)}>
                   <Fontisto name="trash" size={18} color={theme.grey} />
                 </TouchableOpacity>
@@ -168,7 +185,7 @@ const styles = StyleSheet.create({
   },
   check: {
     paddingRight: 20,
-    color: theme.grey,
+    color: "white",
   },
   header: {
     justifyContent: "space-between",
@@ -198,5 +215,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "600",
+  },
+  doneText: {
+    color: theme.grey,
   },
 });
