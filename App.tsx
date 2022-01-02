@@ -26,6 +26,7 @@ interface ItoDo {
 }
 
 const STORAGE_KEY = "@toDos";
+const TAB_STATE = "@tabs";
 
 export default function App() {
   const [working, setWorking] = useState(true);
@@ -36,8 +37,23 @@ export default function App() {
     loadToDos();
   }, []);
 
-  const travel = () => setWorking(false);
-  const work = () => setWorking(true);
+  const travel = async () => {
+    try {
+      setWorking(false);
+      await AsyncStorage.setItem(TAB_STATE, JSON.stringify(false));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const work = async () => {
+    try {
+      setWorking(true);
+      await AsyncStorage.setItem(TAB_STATE, JSON.stringify(true));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const onChangeText = (payload: string) => setText(payload);
 
   const saveToDos = async (toSave: object) => {
@@ -50,8 +66,12 @@ export default function App() {
   const loadToDos = async () => {
     try {
       const s = await AsyncStorage.getItem(STORAGE_KEY);
+      const t = await AsyncStorage.getItem(TAB_STATE);
       if (s) {
         setToDos(JSON.parse(s));
+      }
+      if (t) {
+        setWorking(JSON.parse(t));
       }
     } catch (e) {
       console.log(e);
