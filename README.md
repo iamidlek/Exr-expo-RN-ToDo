@@ -11,3 +11,11 @@
 - onPress={} 탭 in out 했을 때 실행될 것들
 - TouchableWithoutFeedback UI변화없이 터치만 가능하게
 - Pressable 위의 속성 및 긴시간 누르는 경우 등 제어가능 delayLongPass
+
+## url
+
+- https://expo.dev/@yanagis/yholeworkhardtravelhard
+
+## about build
+
+- https://docs.expo.dev/classic/building-standalone-apps/
