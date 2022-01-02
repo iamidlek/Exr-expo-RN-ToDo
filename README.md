@@ -2,7 +2,7 @@
 
 - [ ] Tap(work,travel) 선택 상태를 기억하고 재실행시 보여주기
 - [x] Todo 완료 버튼 만들기( 완료, 완료 취소 )
-- [ ] Todo의 text를 수정 가능하게 하기
+- [x] Todo의 text를 수정 가능하게 하기
 
 ## Memo
 
