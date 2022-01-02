@@ -141,10 +141,14 @@ export default function App() {
           toDos[key].working === working ? (
             <View style={styles.toDo} key={key}>
               <Text style={styles.toDoText}>{toDos[key].text}</Text>
-              <AntDesign name="check" size={24} color="black" />
-              <TouchableOpacity onPress={() => deleteToDo(key)}>
-                <Fontisto name="trash" size={18} color={theme.grey} />
-              </TouchableOpacity>
+              <View style={styles.box}>
+                <TouchableOpacity onPress={() => deleteToDo(key)}>
+                  <AntDesign name="check" size={24} style={styles.check} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => deleteToDo(key)}>
+                  <Fontisto name="trash" size={18} color={theme.grey} />
+                </TouchableOpacity>
+              </View>
             </View>
           ) : null
         )}
@@ -158,6 +162,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.bg,
     paddingHorizontal: 20,
+  },
+  box: {
+    flexDirection: "row",
+  },
+  check: {
+    paddingRight: 20,
+    color: theme.grey,
   },
   header: {
     justifyContent: "space-between",
